@@ -1,0 +1,31 @@
+import "dotenv/config";
+import express from 'express';
+import Database from './configs/db';
+import useRouteUser from './routes/users';
+import useRoutePatient from './routes/paitients';
+import useRouteDoctor from "./routes/doctors";
+import useRouteUnits from "./routes/units";
+import useRouteAppointment from "./routes/appointment";
+import swaggerJSDoc from 'swagger-jsdoc';
+import SwaggerOption from "./configs/swagger";
+import swaggerUi from 'swagger-ui-express';
+import morgan from "morgan";
+import cors from 'cors';
+const app = express();
+const port = process.env.PORT || 3000;
+const swaggerDocument = swaggerJSDoc(SwaggerOption);
+app.use(morgan('combined'));
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+Database.connect();
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/users', useRouteUser());
+app.use('/patients', useRoutePatient());
+app.use('/doctors', useRouteDoctor());
+app.use('/units', useRouteUnits());
+app.use('/appointments', useRouteAppointment());
+
+app.listen(port, () => {
+  console.log(`Server started at http://localhost:${port}`);
+});

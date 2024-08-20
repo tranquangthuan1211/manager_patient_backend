@@ -1,0 +1,114 @@
+tags:
+  - name: user
+    description: User operations
+paths:
+  /users:
+    get:
+      summary: Get ìnformation of user
+      description: Get all users
+      operationId: getUser
+      tags:
+        - user
+      responses:
+        '200':
+          description: Information of user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  http:
+                    type: number
+                  message:
+                    type: string
+                  data:
+                    type: object
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                        message:
+                          type: string
+    put:
+      summary: Update user information
+      description: Update user information
+      operationId: updateUser
+      tags:
+        - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userName:
+                  type: string
+                bio:
+                  type: string
+                website:
+                  type: string
+                avatar:
+                  type: string
+      responses:
+        '200':
+          description: Update user information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  http:
+                    type: number
+                  message:
+                    type: string
+                  data:
+                    type: object
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                        message:
+                          type: string
+  /users/{userId}:
+    get:
+      summary: Get user information by userId
+      description: Get user information by userId
+      operationId: getUserById
+      tags:
+        - user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: userId
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get user information by userId
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  http:
+                    type: number
+                  message:
+                    type: string
+                  data:
+                    type: object
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                        message:
+                          type: string
