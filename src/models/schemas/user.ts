@@ -12,6 +12,7 @@ export interface Users {
     consulting_day: string;
     role: string;
     status: string;
+    major: string;
     createdAt?: string;
     updatedAt?: string;
     deletedAt?: string;
