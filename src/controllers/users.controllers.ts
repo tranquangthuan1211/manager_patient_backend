@@ -164,16 +164,6 @@ class UserController {
     }
   }
 
-  async updateUser(req: Request, res: Response) {
-    try {
-      await UsersDataBase.users.updateOne({email: req.body.email}, {$set: req.body});
-      return res.json({message: "User updated successfully"});
-    }
-    catch(error) {
-      console.log(error);
-    }
-  }
-
   async deleteUser(req: Request, res: Response) {
     try {
       await UsersDataBase.users.deleteOne({email: req.body.email});
@@ -232,6 +222,24 @@ class UserController {
       console.error('Lỗi khi tạo tài khoản:', error);
       return res.status(500).json({
         message: 'Đã xảy ra lỗi khi tạo tài khoản',
+        error: error,
+      });
+    }
+  }
+  async updateUserById(req: Request, res: Response) {
+    try {
+      const id = req.params.id;
+      const user = req.body;
+      const {_id, ...rest} = user;
+      const result = await UsersDataBase.users.updateOne({ _id: new ObjectId(id)}, { $set: rest });
+      return res.status(200).json({
+        message: 'Cập nhật tài khoản thành công',
+        data: result,
+      });
+    } catch (error) {
+      console.error('Lỗi khi cập nhật tài khoản:', error);
+      return res.status(500).json({
+        message: 'Đã xảy ra lỗi khi cập nhật tài khoản',
         error: error,
       });
     }

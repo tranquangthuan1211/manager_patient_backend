@@ -10,6 +10,7 @@ const useRouteUser = () => {
     router.get('/info', UserController.getUser);
     router.get('/', UserController.getUserInfoHandler);
     router.post("/many", UserController.createManyUsers)
+    router.put("/:id", UserController.updateUserById)
     return router;
 }
 
