@@ -6,6 +6,7 @@ import useRoutePatient from './routes/paitients';
 import useRouteDoctor from "./routes/doctors";
 import useRouteUnits from "./routes/units";
 import useRouteAppointment from "./routes/appointment";
+import useRouteDisease from "./routes/diseases";
 import swaggerJSDoc from 'swagger-jsdoc';
 import SwaggerOption from "./configs/swagger";
 import swaggerUi from 'swagger-ui-express';
@@ -25,6 +26,7 @@ app.use('/patients', useRoutePatient());
 app.use('/doctors', useRouteDoctor());
 app.use('/units', useRouteUnits());
 app.use('/appointments', useRouteAppointment());
+app.use('/diseases', useRouteDisease());
 
 app.listen(port, () => {
   console.log(`Server started at http://localhost:${port}`);
