@@ -1,17 +1,18 @@
 tags:
   - name: user
     description: User operations
+
 paths:
-  /users:
+  /users/login:
     get:
-      summary: Get ìnformation of user
+      summary: Get information of users
       description: Get all users
-      operationId: getUser
+      operationId: getUsers
       tags:
         - user
       responses:
         '200':
-          description: Information of user
+          description: Information of users
           content:
             application/json:
               schema:
@@ -19,10 +20,24 @@ paths:
                 properties:
                   http:
                     type: number
+                    example: 200
                   message:
                     type: string
+                    example: "Users retrieved successfully"
                   data:
-                    type: object
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        username:
+                          type: string
+                        email:
+                          type: string
+                        createdAt:
+                          type: string
+                          format: date-time
                   errors:
                     type: array
                     items:
@@ -32,6 +47,59 @@ paths:
                           type: string
                         message:
                           type: string
+    post:
+      summary: User login
+      description: Authenticates a user and returns a JWT token
+      operationId: loginUser
+      tags:
+        - user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  example: johndoe
+                password:
+                  type: string
+                  example: securepassword
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid username or password"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Internal server error"
     put:
       summary: Update user information
       description: Update user information
@@ -39,12 +107,13 @@ paths:
       tags:
         - user
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               type: object
               properties:
-                userName:
+                username:
                   type: string
                 bio:
                   type: string
@@ -54,7 +123,7 @@ paths:
                   type: string
       responses:
         '200':
-          description: Update user information
+          description: User information updated
           content:
             application/json:
               schema:
@@ -62,10 +131,23 @@ paths:
                 properties:
                   http:
                     type: number
+                    example: 200
                   message:
                     type: string
+                    example: "User updated successfully"
                   data:
                     type: object
+                    properties:
+                      id:
+                        type: string
+                      username:
+                        type: string
+                      bio:
+                        type: string
+                      website:
+                        type: string
+                      avatar:
+                        type: string
                   errors:
                     type: array
                     items:
@@ -75,10 +157,11 @@ paths:
                           type: string
                         message:
                           type: string
-  /users/{userId}:
+
+  /users/{id}:
     get:
       summary: Get user information by userId
-      description: Get user information by userId
+      description: Retrieve user information based on userId
       operationId: getUserById
       tags:
         - user
@@ -86,12 +169,12 @@ paths:
         - name: userId
           in: path
           required: true
-          description: userId
+          description: The ID of the user to retrieve
           schema:
             type: string
       responses:
         '200':
-          description: Get user information by userId
+          description: User information retrieved
           content:
             application/json:
               schema:
@@ -99,10 +182,22 @@ paths:
                 properties:
                   http:
                     type: number
+                    example: 200
                   message:
                     type: string
+                    example: "User retrieved successfully"
                   data:
                     type: object
+                    properties:
+                      id:
+                        type: string
+                      username:
+                        type: string
+                      email:
+                        type: string
+                      createdAt:
+                        type: string
+                        format: date-time
                   errors:
                     type: array
                     items:
@@ -112,3 +207,26 @@ paths:
                           type: string
                         message:
                           type: string
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User not found"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Internal server error"
+              
+  /users:
+  

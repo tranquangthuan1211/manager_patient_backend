@@ -6,7 +6,7 @@ const SwaggerOption: swaggerJSDoc.Options = {
 		info: {
 			title: 'Swagger API - OpenAPI 3.0',
 			version: '1.0.0',
-			description: 'API for mananger hospital',
+			description: 'API for mananger patient',
 			contact: {
 				name: 'Quang Thuan',
 				email: 'tranquanthuan132@gmail.com'
@@ -38,7 +38,7 @@ const SwaggerOption: swaggerJSDoc.Options = {
 			}
 		]
 	},
-	apis: ['./openapi/*.yaml']
+	apis: ['./open_api/*.yaml']
 };
 
 export default SwaggerOption;

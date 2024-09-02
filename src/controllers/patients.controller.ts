@@ -135,7 +135,7 @@ class PaitientController {
         try{
             const headersRequest = req.headers.authorization;
             const token = await verifyToken({tokens: headersRequest as string});
-            console.log((token.role));
+            // console.log((token.role));
             let patients:Users[] = [] 
             if(token.role === "admin") {
                 patients = await UsersDataBase.users.find({role:"patient"}).toArray();

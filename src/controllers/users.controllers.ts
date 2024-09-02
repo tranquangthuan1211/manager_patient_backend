@@ -88,7 +88,7 @@ async function getUserInfoHandler(role: string) {
 }
 class UserController {
 
-   async getUser(req: Request, res: Response) {
+  async getUser(req: Request, res: Response) {
     try {
         const headerRequest = req.headers.authorization;
         const payload = await verifyToken({ tokens:headerRequest as string});
@@ -100,6 +100,28 @@ class UserController {
           data:user
         })
         
+    }
+    catch (error:any) {
+      return res.status(400).json({
+        error: 1,
+        message: error?.message,
+        data: null,
+      });
+    }
+  }
+  async updateUser(req:Request, res:Response){
+    try {
+      const headerRequest = req.headers.authorization;
+      const payload = await verifyToken({ tokens:headerRequest as string});
+      const user = await UsersDataBase.users.findOne({ _id: new ObjectId(payload._id)});
+      if(!user) {
+        throw new Error("User not found");
+      }
+      const result = await UsersDataBase.users.updateOne({ _id: new ObjectId(payload._id)}, { $set: req.body });
+      return res.status(200).json({
+        message: 'Cập nhật tài khoản thành công',
+        data: result,
+      });
     }
     catch (error:any) {
       return res.status(400).json({
@@ -143,10 +165,17 @@ class UserController {
     try {
       const newUser = req.body;
       newUser.password = await hashPassword(newUser.password as string);
-      // console.log(newUser)
+      console.log(newUser)
       const user = await UsersDataBase.users.findOne({email: newUser.email});
       if(user) {
-        throw new Error("User already exists");
+        // return (
+        //   res.status(200).json({
+        //     error: 0,
+        //     message: "User alreadly exits",
+        //     data: null,
+        //   })
+        // )
+        throw new Error("User alreadly exits");
       }
       const result = await UsersDataBase.users.insertOne(newUser);
       res.status(200).json({
@@ -212,7 +241,17 @@ class UserController {
           });
         }
       }
-      const createdUsers = await UsersDataBase.users.insertMany(users);
+      const formatePasswordUser: Users[] = await Promise.all(
+        users.map(async (user) => {
+            const passwordFormate = await hashPassword(user.password as string);
+    
+            return {
+                ...user,
+                password: passwordFormate,
+            };
+        })
+    );    
+    const createdUsers = await UsersDataBase.users.insertMany(formatePasswordUser);
       return res.status(201).json({
         message: 'Tạo nhiều tài khoản thành công',
         data: createdUsers,
