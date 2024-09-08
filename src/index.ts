@@ -8,6 +8,7 @@ import useRouteUnits from "./routes/units";
 import useRouteAppointment from "./routes/appointment";
 import useRouteDisease from "./routes/diseases";
 import useRouteComplaint from "./routes/complaints";
+import useServiceRouter from "./routes/service";
 import swaggerJSDoc from 'swagger-jsdoc';
 import SwaggerOption from "./configs/swagger";
 import swaggerUi from 'swagger-ui-express';
@@ -29,6 +30,7 @@ app.use('/units', useRouteUnits());
 app.use('/appointments', useRouteAppointment());
 app.use('/diseases', useRouteDisease());
 app.use('/complaints', useRouteComplaint());
+app.use('/services', useServiceRouter());
 app.listen(port, () => {
   console.log(`Server started at http://localhost:${port}`);
 });

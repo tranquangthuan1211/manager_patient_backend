@@ -3,7 +3,7 @@
 Đây là api dùng để quản lý danh sách bệnh nhân và bác sĩ tại bệnh viện
 ### công nghệ sử dụng
 1. Backend: nodeJs(expressJs), mongoDB
-2. Cloudinary 
+2. Cloudinary, sử dụng rate limiting 
 
 ### Yêu cầu
 1. Bổ sung thông tin trong file .evn

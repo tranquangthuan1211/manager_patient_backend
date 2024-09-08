@@ -163,10 +163,16 @@ class UserController {
   }
   async createUser(req: Request, res: Response) {
     try {
-      const newUser = req.body;
+      const newUser = req.body as Users;
       newUser.password = await hashPassword(newUser.password as string);
-      console.log(newUser)
+      // newUser.role = 
+      //   req.body.role === "bệnh nhân" ? "patient" : 
+      //   req.body.role === "bác sĩ" ? "doctor" : 
+      //   "manager" ;
+      // console.log(newUser)
       const user = await UsersDataBase.users.findOne({email: newUser.email});
+      const {password, ...dataUser} = newUser; 
+      const token = await signToken({payload: dataUser});
       if(user) {
         // return (
         //   res.status(200).json({
@@ -181,7 +187,7 @@ class UserController {
       res.status(200).json({
         error: 0,
         message: "User created successfully",
-        data: result,
+        data: token,
       });
     }
     catch (error:any) {
@@ -195,7 +201,8 @@ class UserController {
 
   async deleteUser(req: Request, res: Response) {
     try {
-      await UsersDataBase.users.deleteOne({email: req.body.email});
+      const id = req.query.id as string;
+      await UsersDataBase.users.deleteOne({_id: new ObjectId(id)});
       return res.json({message: "User deleted successfully"});
     }
     catch(error) {

@@ -13,6 +13,7 @@ export interface Users {
     role: string;
     status: string;
     major: string;
+    email: string;
     createdAt?: string;
     updatedAt?: string;
     deletedAt?: string;

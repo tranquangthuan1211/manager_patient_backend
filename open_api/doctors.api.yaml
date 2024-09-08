@@ -1,0 +1,64 @@
+paths:
+  /doctors:
+    get:
+      tags:
+        - Doctors
+      summary: Lấy danh sách tất cả bác sĩ
+      responses:
+        '200':
+          description: Danh sách bác sĩ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: "12345"
+                    name:
+                      type: string
+                      example: "Dr. John Doe"
+                    specialty:
+                      type: string
+                      example: "Cardiology"
+        '500':
+          description: Lỗi máy chủ
+
+  /doctor-id/{id}:
+    get:
+      tags:
+        - Doctors
+      summary: Lấy thông tin bác sĩ dựa trên ID
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID của bác sĩ
+      responses:
+        '200':
+          description: Thông tin chi tiết của bác sĩ
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "12345"
+                  name:
+                    type: string
+                    example: "Dr. John Doe"
+                  specialty:
+                    type: string
+                    example: "Cardiology"
+                  experience:
+                    type: number
+                    example: 10
+        '404':
+          description: Bác sĩ không tìm thấy
+        '500':
+          description: Lỗi máy chủ

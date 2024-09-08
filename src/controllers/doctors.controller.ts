@@ -1,7 +1,12 @@
 import { Request, Response } from "express";
 import UsersDataBase from "../models/user-model";
 import { ObjectId } from "mongodb";
+import { verifyToken } from "../securities/jwt";
+import { Users } from "../models/schemas/user";
 
+async function getDoctorInfoHandler(id: string) {
+
+}
 class DoctorController {
   async getDoctor(req: Request, res: Response) {
     try{
@@ -18,24 +23,11 @@ class DoctorController {
       });
     }
   }
-  async getDoctors(req: Request, res: Response) {
+  async deleteDoctor(req: Request, res: Response) {
     try{
-      const idManger = req.params.id
-      const doctors = await UsersDataBase.users
-      .find({role:"doctor", id_manager:idManger})
-      .toArray();
-      if(doctors.length === 0) {
-        res.status(400).json({
-          result: "id admin not found",
-          data: []
-        })
-        return;
-      }
-      res.status(200).json({
-        result:"successfully",
-        data: doctors
-      });
-
+      const id = req.params.id;
+      const result = await UsersDataBase.users.deleteOne({ _id: new ObjectId(id) });
+      res.json(result);
     }
     catch (error:any) {
       return res.status(400).json({
@@ -45,6 +37,28 @@ class DoctorController {
       });
     }
   }
+  async getDoctors(req: Request, res: Response) {
+    try{
+        const headersRequest = req.headers.authorization;
+        const token = await verifyToken({tokens: headersRequest as string});
+        // console.log((token.role));
+        let patients:Users[] = [] 
+        if(token.role === "admin") {
+            patients = await UsersDataBase.users.find({role:"doctor"}).toArray();
+            return res.status(200).json(patients);
+        }
+        const data = await UsersDataBase.users.find({role:"doctor",id_manager:token.id }).toArray();
+        return res.status(200).json(data);
+
+    }
+    catch (error:any) {
+        return res.status(400).json({
+            error: 1,
+            message: error?.message,
+            data: null,
+        });
+    }
+}
 }
 
 export default new DoctorController();

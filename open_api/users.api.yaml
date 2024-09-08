@@ -3,7 +3,7 @@ tags:
     description: User operations
 
 paths:
-  /users/login:
+  /users:
     get:
       summary: Get information of users
       description: Get all users
@@ -29,15 +29,10 @@ paths:
                     items:
                       type: object
                       properties:
-                        id:
-                          type: string
-                        username:
-                          type: string
                         email:
                           type: string
-                        createdAt:
+                        password:
                           type: string
-                          format: date-time
                   errors:
                     type: array
                     items:
@@ -48,9 +43,9 @@ paths:
                         message:
                           type: string
     post:
-      summary: User login
-      description: Authenticates a user and returns a JWT token
-      operationId: loginUser
+      summary: User Register
+      description: Register account user
+      operationId: registerUser
       tags:
         - user
       requestBody:
@@ -62,6 +57,11 @@ paths:
               required:
                 - username
                 - password
+                - name
+                - age
+                - address
+                - gender
+                - phone
               properties:
                 username:
                   type: string
@@ -69,9 +69,21 @@ paths:
                 password:
                   type: string
                   example: securepassword
+                name:
+                  type: string
+                  example: Thuan
+                age:
+                  type: number
+                  example: 20
+                gender:
+                  type: string
+                  example: male
+                phone: 
+                  type: string
+                  example: 0905123455
       responses:
         '200':
-          description: Successful login
+          description: Successful Register
           content:
             application/json:
               schema:
@@ -227,6 +239,272 @@ paths:
                   message:
                     type: string
                     example: "Internal server error"
-              
-  /users:
-  
+    put:
+      summary: Update user information
+      description: Update user information by id
+      operationId: updateUser
+      tags:
+        - user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                age:
+                  type: number
+                address:
+                  type: string
+                phone:
+                  type: string
+      responses:
+        '200':
+          description: User information updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  http:
+                    type: number
+                    example: 200
+                  message:
+                    type: string
+                    example: "User updated successfully"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      username:
+                        type: string
+                      bio:
+                        type: string
+                      website:
+                        type: string
+                      avatar:
+                        type: string
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                        message:
+                          type: string
+    delete:
+      summary: Delete a user by userId
+      description: Deletes a user based on the provided userId
+      operationId: deleteUserById
+      tags:
+        - user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The ID of the user to delete
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User deleted successfully"
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User not found"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Internal server error"
+
+  /users/login:
+    post:
+      summary: User Login
+      description: Login user
+      operationId: loginUser
+      tags:
+        - user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  example: johndoe
+                password:
+                  type: string
+                  example: securepassword
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid username or password"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Internal server error"
+/users/many:
+  post:
+    summary: Create many users
+    description: Create multiple users
+    operationId: createManyUsers
+    tags:
+      - user
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              required:
+                - username
+                - password
+                - name
+                - age
+                - address
+                - gender
+                - phone
+              properties:
+                username:
+                  type: string
+                  example: johndoe
+                password:
+                  type: string
+                  example: securepassword
+                name:
+                  type: string
+                  example: Thuan
+                age:
+                  type: number
+                  example: 20
+                gender:
+                  type: string
+                  example: male
+                phone: 
+                  type: string
+                  example: 0905123455
+    responses:
+      '200':
+        description: Users created successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                http:
+                  type: number
+                  example: 200
+                message:
+                  type: string
+                  example: "Users created successfully"
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "12345"
+                      username:
+                        type: string
+                        example: "johndoe"
+                      bio:
+                        type: string
+                        example: "A short bio"
+                      website:
+                        type: string
+                        example: "https://example.com"
+                      avatar:
+                        type: string
+                        example: "https://example.com/avatar.jpg"
+                errors:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      field:
+                        type: string
+                        example: "username"
+                      message:
+                        type: string
+                        example: "Username is required"
+      '400':
+        description: Invalid file format or data
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                http:
+                  type: number
+                  example: 400
+                message:
+                  type: string
+                  example: "Invalid file format or data"
+      '500':
+        description: Server error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                http:
+                  type: number
+                  example: 500
+                message:
+                  type: string
+                  example: "Internal server error"
