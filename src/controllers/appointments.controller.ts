@@ -110,6 +110,21 @@ class AppointmentController {
             res.status(500).json({ message: err.message })
         }
     }
+    async createAppointment(req: Request, res: Response){
+        try {
+            const reqHeaders = req.headers['authorization']
+            const payload = await verifyToken({ tokens: reqHeaders as string })
+            const newAppointment = {...req.body, patient_id: payload._id}
+            // console.log(newAppointment)
+            const result = await AppointmentDataBase.appointments.insertOne(newAppointment)
+            res.status(200).json({
+                data: result
+            })
+            
+        } catch (err: any) {
+            res.status(500).json({ message: err.message })
+        }
+    }
 }
 
 export default new AppointmentController()

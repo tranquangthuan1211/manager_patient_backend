@@ -5,6 +5,7 @@ const router = express.Router()
 
 function useRouteAppointment() {
     router.get('/', AppointmentController.getAppointments)
+    router.post('/', AppointmentController.createAppointment)
     return router
 }
 

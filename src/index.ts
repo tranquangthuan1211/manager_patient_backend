@@ -8,7 +8,7 @@ import useRouteUnits from "./routes/units";
 import useRouteAppointment from "./routes/appointment";
 import useRouteDisease from "./routes/diseases";
 import useRouteComplaint from "./routes/complaints";
-import useServiceRouter from "./routes/service";
+import useServiceRouter from "./routes/services";
 import swaggerJSDoc from 'swagger-jsdoc';
 import SwaggerOption from "./configs/swagger";
 import swaggerUi from 'swagger-ui-express';
