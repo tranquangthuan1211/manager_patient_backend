@@ -290,5 +290,21 @@ class UserController {
       });
     }
   }
+  async deleteUserById(req: Request, res: Response) {
+    try {
+      const id = req.params.id;
+      const result = await UsersDataBase.users.deleteOne({ _id: new ObjectId(id) });
+      return res.status(200).json({
+        message: 'Xóa tài khoản thành công',
+        data: result,
+      });
+    } catch (error) {
+      console.error('Lỗi khi xóa tài khoản:', error);
+      return res.status(500).json({
+        message: 'Đã xảy ra lỗi khi xóa tài khoản',
+        error: error,
+      });
+    }
+  }
 }
 export default new UserController();

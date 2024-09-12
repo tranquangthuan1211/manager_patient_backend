@@ -5,14 +5,16 @@ import {managerMiddleware} from "../middlewares/manger.middileware"
 const router = express.Router();
 const useRouteUser = () => {
     router.post('/', UserController.createUser);
-    router.get('/info', UserController.getUser);
     router.post('/login', UserController.signIn);
     // user personality
-    router.put('/', UserController.updateUser);
-    // router.use(adminMiddleware);
     router.get('/', UserController.getUserInfoHandler);
     router.post("/many", UserController.createManyUsers)
     router.put("/:id", UserController.updateUserById)
+    router.delete("/:id", UserController.deleteUserById)
+    router.use(authMiddleware);
+    router.get('/info', UserController.getUser);
+    router.put('/', UserController.updateUser);
+    // router.use(adminMiddleware);
     return router;
 }
 

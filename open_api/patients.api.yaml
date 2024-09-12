@@ -7,7 +7,7 @@ paths:
     get:
       tags:
         - patient
-      summary: Retrieve a list of patients
+      summary: Get list of patients
       description: Retrieve a list of all patients.
       responses:
         '200':
@@ -31,6 +31,17 @@ paths:
                       type: integer
                       description: The patient's age.
                       example: 30
+                    address:
+                      type: string
+                      description: The patient's address.
+                      example: 123 Main St.
+                    gender:
+                      type: string
+                      description: The patient
+                    phone:
+                      type: string
+                      description: The patient's phone number.
+                      example: 123-456-7890
 
   /patients/{id}:
     delete:
