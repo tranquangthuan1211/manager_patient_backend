@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import AppointmentDataBase from '../models/appointment-model'
 import { verifyToken } from '../securities/jwt';
+import { ObjectId } from "mongodb";
 
 async function getAppointmentsHandler(id:string, role:string) {
     try {
@@ -77,10 +78,9 @@ async function getAppointmentsHandler(id:string, role:string) {
                 },
                 {
                     $project: {
-                    _id: 1, 
-                    patient_id: 1,
-                    doctor_id: 1,
+                    _id: 1,
                     manager_id: 1,
+                    status:1,
                     date: 1,
                     time: 1,
                     patient_name: { $arrayElemAt: ["$patient.name", 0] },
@@ -121,6 +121,42 @@ class AppointmentController {
                 data: result
             })
             
+        } catch (err: any) {
+            res.status(500).json({ message: err.message })
+        }
+    }
+    async completeAppointment(req: Request, res: Response){
+        try {
+            const _id = req.params.id as string
+            const {id, ...rest} = req.body 
+            const result = await AppointmentDataBase.appointments.updateOne({ _id: new ObjectId(_id )}, {$set: rest})
+            res.status(200).json({
+                data: result
+            })
+        } catch (err: any) {
+            res.status(500).json({ message: err.message })
+        }
+    }
+    async updateAppointment(req: Request, res: Response){
+        try {
+            const _id = req.params.id as string
+            const {id, ...rest} = req.body 
+            const result = await AppointmentDataBase.appointments.updateOne({ _id: new ObjectId(_id )}, {$set: rest})
+            res.status(200).json({
+                data: result
+            })
+        } catch (err: any) {
+            res.status(500).json({ message: err.message })
+        }
+    }
+    async deleteAppointment(req: Request, res: Response){  
+        try {
+            const _id = req.params.id as string
+            console.log(_id)
+            const result = await AppointmentDataBase.appointments.deleteOne({ _id: new ObjectId(_id) })
+            res.status(200).json({
+                data: result
+            })
         } catch (err: any) {
             res.status(500).json({ message: err.message })
         }
