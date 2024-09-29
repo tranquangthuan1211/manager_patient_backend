@@ -17,6 +17,7 @@ import morgan from "morgan";
 import cors from 'cors';
 const app = express();
 const port = process.env.PORT || 3000;
+const apiRoute = express.Router();
 const swaggerDocument = swaggerJSDoc(SwaggerOption);
 app.use(morgan('combined'));
 app.use(cors());
@@ -33,6 +34,7 @@ app.use('/diseases', useRouteDisease());
 app.use('/complaints', useRouteComplaint());
 app.use('/services', useServiceRouter());
 app.use("/setting-appointment", UseSettingAppoitmentRoutes());
+app.use("/api/v1", apiRoute);
 app.listen(port, () => {
   console.log(`Server started at http://localhost:${port}`);
 });

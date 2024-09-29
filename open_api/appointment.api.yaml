@@ -1,0 +1,256 @@
+tags:
+  - name: appointment
+    description: Appointment operations
+
+paths:
+  /appointments:
+    get:
+      summary: Get list of appointments
+      description: Retrieve all appointments
+      operationId: getAppointments
+      tags:
+        - appointment
+      responses:
+        '200':
+          description: A list of appointments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: "12345"
+                    patientName:
+                      type: string
+                      example: "John Doe"
+                    doctorName:
+                      type: string
+                      example: "Dr. Smith"
+                    date:
+                      type: string
+                      example: "2024-09-29T10:00:00Z"
+                    status:
+                      type: string
+                      example: "completed"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Internal server error"
+
+    post:
+      summary: Create an appointment
+      description: Add a new appointment
+      operationId: createAppointment
+      tags:
+        - appointment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                patientName:
+                  type: string
+                  example: "John Doe"
+                doctorName:
+                  type: string
+                  example: "Dr. Smith"
+                date:
+                  type: string
+                  example: "2024-09-29T10:00:00Z"
+      responses:
+        '201':
+          description: Appointment created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "12345"
+                  message:
+                    type: string
+                    example: "Appointment created successfully"
+        '400':
+          description: Invalid data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid data provided"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Internal server error"
+
+  /appointments/{id}:
+    patch:
+      summary: Complete an appointment
+      description: Mark an appointment as completed
+      operationId: completeAppointment
+      tags:
+        - appointment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the appointment to complete
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Appointment marked as completed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Appointment completed successfully"
+        '404':
+          description: Appointment not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Appointment not found"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Internal server error"
+
+    put:
+      summary: Update an appointment
+      description: Update an existing appointment
+      operationId: updateAppointment
+      tags:
+        - appointment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the appointment to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                patientName:
+                  type: string
+                  example: "John Doe"
+                doctorName:
+                  type: string
+                  example: "Dr. Smith"
+                date:
+                  type: string
+                  example: "2024-09-29T10:00:00Z"
+      responses:
+        '200':
+          description: Appointment updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Appointment updated successfully"
+        '404':
+          description: Appointment not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Appointment not found"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Internal server error"
+
+    delete:
+      summary: Delete an appointment
+      description: Remove an appointment by ID
+      operationId: deleteAppointment
+      tags:
+        - appointment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the appointment to delete
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Appointment deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Appointment deleted successfully"
+        '404':
+          description: Appointment not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Appointment not found"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Internal server error"

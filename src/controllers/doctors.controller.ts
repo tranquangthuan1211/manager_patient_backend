@@ -58,7 +58,23 @@ class DoctorController {
             data: null,
         });
     }
-}
+  }
+  async updateDoctor(req: Request, res: Response) {
+    try{
+      const id = req.params.id;
+      console.log(id)
+      const {_id,...rest} = req.body;
+      const result = await UsersDataBase.users.updateOne({ _id: new ObjectId(id) }, { $set: rest });
+      res.status(200).json(result);
+    }
+    catch (error:any) {
+      return res.status(400).json({
+        error: 1,
+        message: error?.message,
+        data: null,
+      });
+    }
+  }
 }
 
 export default new DoctorController();

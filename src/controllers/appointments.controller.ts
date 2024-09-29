@@ -103,6 +103,7 @@ class AppointmentController {
             const payload = await verifyToken({ tokens: reqHeaders as string })
             console.log(payload.role)
             const appointments = await getAppointmentsHandler(payload.id as string, payload.role as string)
+            // console.log(appointments)
             res.status(200).json({
                 data: appointments
             })
@@ -128,8 +129,8 @@ class AppointmentController {
     async completeAppointment(req: Request, res: Response){
         try {
             const _id = req.params.id as string
-            const {id, ...rest} = req.body 
-            const result = await AppointmentDataBase.appointments.updateOne({ _id: new ObjectId(_id )}, {$set: rest})
+            const {id, doctor_id, status} = req.body 
+            const result = await AppointmentDataBase.appointments.updateOne({ _id: new ObjectId(_id )}, {$set: {status: status, doctor_id}})
             res.status(200).json({
                 data: result
             })
@@ -139,9 +140,10 @@ class AppointmentController {
     }
     async updateAppointment(req: Request, res: Response){
         try {
+            console.log(req.body)
             const _id = req.params.id as string
-            const {id, ...rest} = req.body 
-            const result = await AppointmentDataBase.appointments.updateOne({ _id: new ObjectId(_id )}, {$set: rest})
+            const {id, doctor_id, status, ...rest} = req.body
+            const result = await AppointmentDataBase.appointments.updateOne({ _id: new ObjectId(_id )}, {$set: {status: status, doctor_id}})    
             res.status(200).json({
                 data: result
             })
