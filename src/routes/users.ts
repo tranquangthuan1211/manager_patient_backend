@@ -6,7 +6,7 @@ const router = express.Router();
 const useRouteUser = () => {
     router.post('/', UserController.createUser);
     router.post('/login', UserController.signIn);
-    // user personality
+    router.use(managerMiddleware);
     router.get('/', UserController.getUserInfoHandler);
     router.post("/many", UserController.createManyUsers)
     router.put("/:id", UserController.updateUserById)

@@ -97,6 +97,20 @@ async function getAppointmentsHandler(id:string, role:string) {
     }
 }
 class AppointmentController {
+    async getAppointment(req: Request, res: Response){
+        try {
+            const reqHeaders = req.headers['authorization']
+            const payload = await verifyToken({ tokens: reqHeaders as string })
+            const appointment = await AppointmentDataBase.appointments.findOne({patient_id: payload.id})
+            console.log(appointment)
+            return res.status(200).json({
+                data: appointment
+            })
+        }
+        catch (err: any) {
+            res.status(500).json({ message: err.message })
+        }
+    }
     async getAppointments(req: Request, res: Response){
         try {
             const reqHeaders = req.headers['authorization']
@@ -104,7 +118,7 @@ class AppointmentController {
             console.log(payload.role)
             const appointments = await getAppointmentsHandler(payload.id as string, payload.role as string)
             // console.log(appointments)
-            res.status(200).json({
+            return res.status(200).json({
                 data: appointments
             })
         } catch (err: any) {
@@ -115,8 +129,9 @@ class AppointmentController {
         try {
             const reqHeaders = req.headers['authorization']
             const payload = await verifyToken({ tokens: reqHeaders as string })
+            // console.log(payload)
             const newAppointment = {...req.body, patient_id: payload._id}
-            // console.log(newAppointment)
+            console.log(newAppointment)
             const result = await AppointmentDataBase.appointments.insertOne(newAppointment)
             res.status(200).json({
                 data: result
