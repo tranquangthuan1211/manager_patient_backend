@@ -36,9 +36,9 @@ const io = new Server(httpServer, {
   },
 });
 io.on('connection', (socket: Socket) => {
-  console.log(`Một người dùng đã kết nối:  ${socket.id}`);
-
-  socket.on('chat message', (msg: string) => {
+  // console.log(`Một người dùng đã kết nối:  ${socket.id}`);
+  // io.emit('chat message', "hello anh em");
+  socket.on('chat message', (msg: any) => {
     io.emit('chat message', msg);
   });
 
