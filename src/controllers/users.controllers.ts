@@ -136,7 +136,7 @@ class UserController {
       // console.log(req.body)
       const user = await UsersDataBase.users.findOne({email:req.body.username});
       const ip = requestIp.getClientIp(req);
-      console.log(ip)
+      // console.log(ip)
       // console.log(user)
       if(!user) {
         return res.status(400).json({message: "User not found"});
