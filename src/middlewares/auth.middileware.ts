@@ -7,12 +7,11 @@ import { error } from "console";
 
 
 export const authMiddleware = async(req:Request, res:Response, next: NextFunction) => {
-    const token = req.headers["authorization"];
-    if (!token) {
-        throw new Error("Token is required");
-    }
     try {
-
+        if(req.headers["authorization"] === undefined){
+            throw new Error("Token is required");
+        }
+        const token = req.headers["authorization"];
         const tokenData = await verifyToken({tokens: token});
         const email = tokenData.email;
         const user = await Database.users.findOne({ email: email});

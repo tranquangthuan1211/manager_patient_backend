@@ -1,0 +1,264 @@
+tags:
+  - name: favourites
+    description: Operations related to favourite items.
+
+paths:
+  /favourites:
+    get:
+      summary: Get all favourite items
+      description: Retrieve a list of all favourite items.
+      operationId: getFavourites
+      tags:
+        - favourites
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          description: Bearer token for authorization
+          schema:
+            type: string
+            example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        - in: query
+          name: id
+          required: false
+          description: Filter favourites by user ID
+          schema:
+            type: string
+            example: "614b1b7754d1f90012345679"
+      responses:
+        '200':
+          description: A list of favourite items.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Favourite'
+        '500':
+          description: Server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Internal server error"
+
+    post:
+      summary: Add a new favourite item
+      description: Create a new favourite item.
+      operationId: addFavourite
+      tags:
+        - favourites
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user_id
+                - doctor_id
+              properties:
+                user_id:
+                  type: string
+                  example: "614b1b7754d1f90012345679"
+                doctor_id:
+                  type: string
+                  example: "614b1b7754d1f900123456795"
+                doctor:
+                  type: object
+                  required:
+                    - name
+                    - expertise
+                    - address
+                  properties:
+                    name:
+                      type: string
+                      example: "Dr. John Doe"
+                    expertise:
+                      type: string
+                      example: "Cardiology"
+                    address:
+                      type: string
+                      example: "123 Medical Center, HCM City"
+      responses:
+        '201':
+          description: Favourite item created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Favourite'
+        '400':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Invalid input data"
+        '500':
+          description: Server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Internal server error"
+
+  /favourites/{id}:
+    put:
+      summary: Update a favourite item
+      description: Update an existing favourite item.
+      operationId: updateFavourite
+      tags:
+        - favourites
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The ID of the favourite item to update
+          schema:
+            type: string
+            example: "614b1b7754d1f90012345678"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user_id
+                - doctor_id
+              properties:
+                user_id:
+                  type: string
+                  example: "614b1b7754d1f90012345679"
+                doctor_id:
+                  type: string
+                  example: "614b1b7754d1f900123456795"
+                doctor:
+                  type: object
+                  required:
+                    - name
+                    - expertise
+                    - address
+                  properties:
+                    name:
+                      type: string
+                      example: "Dr. Jane Smith"
+                    expertise:
+                      type: string
+                      example: "Pediatrics"
+                    address:
+                      type: string
+                      example: "456 Medical Clinic, HCM City"
+      responses:
+        '200':
+          description: Favourite item updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Favourite'
+        '400':
+          description: Invalid input.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Invalid input data"
+        '404':
+          description: Favourite item not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Favourite item not found"
+        '500':
+          description: Server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Internal server error"
+
+components:
+  schemas:
+    Favourite:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "614b1b7754d1f90012345678"
+          description: Unique identifier for the favourite
+        user_id:
+          type: string
+          example: "614b1b7754d1f90012345679"
+          description: Unique identifier for the user who marked the favourite
+        doctor_id:
+          type: string
+          example: "614b1b7754d1f900123456795"
+          description: Unique identifier for the doctor who is marked as favourite
+        doctor:
+          type: object
+          description: Detailed information about the doctor
+          properties:
+            name:
+              type: string
+              example: "Dr. Jane Smith"
+              description: Full name of the doctor
+            expertise:
+              type: string
+              example: "Pediatrics"
+              description: Doctor's area of expertise
+            address:
+              type: string
+              example: "456 Medical Clinic, HCM City"
+              description: Clinic address where the doctor practices
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-01-01T12:00:00Z"
+          description: The date and time when the favourite was created
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2024-01-10T12:00:00Z"
+          description: The date and time when the favourite was last updated
+        deletedAt:
+          type: string
+          format: date-time
+          example: "2024-01-15T12:00:00Z"
+          description: The date and time when the favourite was deleted (optional)

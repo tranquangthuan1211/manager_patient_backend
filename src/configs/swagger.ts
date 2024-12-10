@@ -18,7 +18,7 @@ const SwaggerOption: swaggerJSDoc.Options = {
 		},
 		servers: [
 			{
-				url: 'http://localhost:3001'
+				url: 'http://localhost:3001/api/v1/'
 			}
 		],
 		components: {

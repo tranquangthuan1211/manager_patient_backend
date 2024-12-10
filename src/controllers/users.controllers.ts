@@ -5,7 +5,7 @@ import {signToken, verifyToken} from "../securities/jwt";
 import { hashPassword,comparePassword } from "../securities/pass";
 import { ObjectId } from "mongodb";
 import {Users} from "../models/schemas/user"
-import requestIp from 'request-ip';
+import {checkInputError} from "../securities/check-input"
 
 async function getUserInfoHandler(role: string) {
   try {
@@ -74,7 +74,6 @@ async function getUserInfoHandler(role: string) {
       }
     });
 
-    // Thực hiện truy vấn
     const data = await UsersDataBase.users.aggregate(pipeline).toArray();
 
     // Log kết quả để debug
@@ -109,8 +108,25 @@ class UserController {
       });
     }
   }
+  async getAllUsers(req: Request, res: Response) {
+    try {
+      const users = await UsersDataBase.users.find().toArray();
+      return res.status(200).json({
+        data: users,
+      });
+    } catch (error) {
+      console.error('Lỗi khi lấy danh sách tài khoản:', error);
+      return res.status(500).json({
+        message: 'Đã xảy ra lỗi khi lấy danh sách tài khoản',
+        error: error,
+      });
+    }
+  }
   async updateUser(req:Request, res:Response){
     try {
+      if(req.headers.authorization){
+        throw new Error("Invalid token")
+      }
       const headerRequest = req.headers.authorization;
       const payload = await verifyToken({ tokens:headerRequest as string});
       const user = await UsersDataBase.users.findOne({ _id: new ObjectId(payload._id)});
@@ -131,13 +147,10 @@ class UserController {
       });
     }
   }
-  async signIn(req: Request, res: Response) {
+  async login(req: Request, res: Response) {
     try {
-      // console.log(req.body)
-      const user = await UsersDataBase.users.findOne({email:req.body.username});
-      const ip = requestIp.getClientIp(req);
-      // console.log(ip)
-      // console.log(user)
+      console.log(req.body)
+      const user = await UsersDataBase.users.findOne({email:req.body.email});
       if(!user) {
         return res.status(400).json({message: "User not found"});
         
@@ -161,29 +174,21 @@ class UserController {
         console.log(error);
     }
   }
-  async createUser(req: Request, res: Response) {
+  async register(req: Request, res: Response) {
     try {
+
       const newUser = req.body as Users;
       newUser.password = await hashPassword(newUser.password as string);
-      // newUser.role = 
-      //   req.body.role === "bệnh nhân" ? "patient" : 
-      //   req.body.role === "bác sĩ" ? "doctor" : 
-      //   "manager" ;
-      // console.log(newUser)
       const user = await UsersDataBase.users.findOne({email: newUser.email});
       const {password, ...dataUser} = newUser; 
       const token = await signToken({payload: dataUser});
       if(user) {
-        // return (
-        //   res.status(200).json({
-        //     error: 0,
-        //     message: "User alreadly exits",
-        //     data: null,
-        //   })
-        // )
         throw new Error("User alreadly exits");
       }
       const result = await UsersDataBase.users.insertOne(newUser);
+      if(!result.acknowledged) {
+        throw new Error("Error when insert user");
+      }
       res.status(200).json({
         error: 0,
         message: "User created successfully",
@@ -304,6 +309,17 @@ class UserController {
         message: 'Đã xảy ra lỗi khi xóa tài khoản',
         error: error,
       });
+    }
+  }
+  async changePassword(req: Request, res: Response) {
+    try{
+
+    }catch(error:any) {
+      return res.status(400).json({
+        error: 1,
+        message: error?.message,
+        data: null,
+      })
     }
   }
 }

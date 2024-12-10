@@ -1,66 +1,57 @@
 import "dotenv/config";
-import express from 'express';
+import { Request, Response } from 'express';
+import express, { NextFunction } from 'express';
 import Database from './configs/db';
 import useRouteUser from './routes/users';
-import useRoutePatient from './routes/paitients';
-import useRouteDoctor from "./routes/doctors";
-import useRouteUnits from "./routes/units";
-import useRouteAppointment from "./routes/appointment";
-import useRouteDisease from "./routes/diseases";
-import useRouteComplaint from "./routes/complaints";
-import useServiceRouter from "./routes/services";
-import useRouteMessage from "./routes/messager-chat";
-import UseSettingAppoitmentRoutes from './routes/setting-appoitments';
+import useRouteFavourite from './routes/favourite';
 import swaggerJSDoc from 'swagger-jsdoc';
 import SwaggerOption from "./configs/swagger";
 import swaggerUi from 'swagger-ui-express';
 import morgan from "morgan";
-import http from 'http';
-import { Server, Socket } from 'socket.io';
-import {ChatSocket} from './socket/socket'; 
 import cors from 'cors';
+// import { rateLimit } from 'express-rate-limit'
 const app = express();
-const httpServer = http.createServer(app);
-const port = process.env.PORT || 3000;
-const apiRoute = express.Router();
+const port = process.env.PORT || 3001;
 const swaggerDocument = swaggerJSDoc(SwaggerOption);
 app.use(morgan('combined'));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 Database.connect();
-const io = new Server(httpServer, {
-  cors: {
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['my-custom-header'],
-    credentials: true,
-  },
+// const limiter = rateLimit({
+// 	windowMs: 2 * 60 * 1000,
+// 	limit: 3, 
+//   message: "Too many requests from this IP, please try again after an hour",
+// })
+// app.use("/api/", limiter);
+// app.all("/api/*",(req:Request,res:Response,next:NextFunction) => {
+//   res.status(404).json({
+//     error: "Not Found",
+//     message: "The requested URL was not found on this server"
+//   })
+// })
+const routesDef = [
+  {path:"users", route: useRouteUser()},
+  {path:"favourites", route: useRouteFavourite()},
+]
+app.use("/api-docs", swaggerUi.serve as any, swaggerUi.setup(swaggerDocument) as any);
+routesDef.forEach(({path,route}) => {
+  app.use(`/api/v1/${path}`,route)
+})
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const error = new Error("Not found") as any;
+  error.status = 404;
+  next(error);
 });
-const chatSocket = new ChatSocket(io);
-// io.on('connection', (socket: Socket) => {
-//   // console.log(`Một người dùng đã kết nối:  ${socket.id}`);
-//   // io.emit('chat message', "hello anh em");
-//   socket.on('chat message', (msg: any) => {
-//     io.emit('chat message', msg);
-//   });
+app.use((error: any, req: Request, res: Response, next: NextFunction) => {
+  res.status(error.status || 500).send({
+      error: {
+          status: error.status || 500,
+          message: error.message || 'Internal Server Error',
+      },
+  });
+});
 
-//   socket.on('disconnect', () => {
-//     console.log('Một người dùng đã ngắt kết nối');
-//   });
-// });
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-app.use('/users', useRouteUser());
-app.use('/patients', useRoutePatient());
-app.use('/doctors', useRouteDoctor());
-app.use('/units', useRouteUnits());
-app.use('/appointments', useRouteAppointment());
-app.use('/diseases', useRouteDisease());
-app.use('/complaints', useRouteComplaint());
-app.use('/services', useServiceRouter());
-app.use("/setting-appointment", UseSettingAppoitmentRoutes());
-app.use("/messages", useRouteMessage());
-app.use("/api/v1", apiRoute);
-httpServer.listen(port, () => {
+app.listen(port, () => {
   console.log(`Server started at http://localhost:${port}`);
 });
