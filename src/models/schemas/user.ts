@@ -10,7 +10,6 @@ export interface Users {
     phone: string;
     consulting_day: string;
     role: string;
-    status: string;
     expertise: string;
     createdAt?: string;
     updatedAt?: string;

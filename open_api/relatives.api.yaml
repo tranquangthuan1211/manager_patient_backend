@@ -1,24 +1,72 @@
 tags:
-  - name: doctors
-    description: Doctor operations
+  - name: relatives
+    description: Relative operations
 
 paths:
-  /doctors:
-    get:
-      summary: Get all doctors
-      description: Retrieve a list of all doctors
-      operationId: getAllDoctors
+  /relatives:
+    post:
+      summary: Create a relative
+      description: Create a new relative
+      operationId: createRelative
       tags:
-        - doctors
+        - relatives
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - relationship
+                - phone
+                - address
+                - userId
+              properties:
+                name:
+                  type: string
+                  example: John Doe
+                relationship:
+                  type: string
+                  example: Father
+                phone:
+                  type: string
+                  example: 0905123456
+                address:
+                  type: string
+                  example: 123 Main St
+                userId:
+                  type: string
+                  example: "614b1b7754d1f90012345678"
       responses:
-        '200':
-          description: Successful response with a list of doctors
+        '201':
+          description: Relative created successfully
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Doctor'
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Relative created successfully"
+                  data:
+                    $ref: '#/components/schemas/Relative'
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Invalid input data"
         '500':
           description: Server error
           content:
@@ -33,30 +81,15 @@ paths:
                     type: string
                     example: "Internal server error"
 
-  /doctors/{id}:
     get:
-      summary: Get doctor by ID
-      description: Retrieve the details of a specific doctor by their ID
-      operationId: getDoctorById
+      summary: Get all relatives
+      description: Retrieve all relatives
+      operationId: getRelatives
       tags:
-        - doctors
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: The ID of the doctor to retrieve
-          schema:
-            type: string
-            example: "614b1b7754d1f90012345678"
+        - relatives
       responses:
         '200':
-          description: Successful response with doctor details
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Doctor'
-        '404':
-          description: Doctor not found
+          description: List of relatives retrieved successfully
           content:
             application/json:
               schema:
@@ -64,10 +97,14 @@ paths:
                 properties:
                   error:
                     type: boolean
-                    example: true
+                    example: false
                   message:
                     type: string
-                    example: "Doctor not found"
+                    example: "Relatives retrieved successfully"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Relative'
         '500':
           description: Server error
           content:
@@ -82,17 +119,18 @@ paths:
                     type: string
                     example: "Internal server error"
 
+  /relatives/{id}:
     patch:
-      summary: Update doctor by ID
-      description: Update the details of a specific doctor by their ID
-      operationId: updateDoctorById
+      summary: Update a relative
+      description: Update a relative's information
+      operationId: updateRelative
       tags:
-        - doctors
+        - relatives
       parameters:
         - name: id
           in: path
           required: true
-          description: The ID of the doctor to update
+          description: ID of the relative to update
           schema:
             type: string
             example: "614b1b7754d1f90012345678"
@@ -105,25 +143,34 @@ paths:
               properties:
                 name:
                   type: string
-                  example: Dr. John Updated
+                  example: John Doe Updated
+                relationship:
+                  type: string
+                  example: Mother
                 phone:
                   type: string
                   example: 0905123456
-                email:
+                address:
                   type: string
-                  example: updatedemail@gmail.com
-                expertise:
-                  type: string
-                  example: Cardiology
+                  example: 456 Main St
       responses:
         '200':
-          description: Doctor updated successfully
+          description: Relative updated successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Doctor'
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Relative updated successfully"
+                  data:
+                    $ref: '#/components/schemas/Relative'
         '404':
-          description: Doctor not found
+          description: Relative not found
           content:
             application/json:
               schema:
@@ -134,7 +181,7 @@ paths:
                     example: true
                   message:
                     type: string
-                    example: "Doctor not found"
+                    example: "Relative not found"
         '500':
           description: Server error
           content:
@@ -150,22 +197,22 @@ paths:
                     example: "Internal server error"
 
     delete:
-      summary: Delete doctor by ID
-      description: Delete a specific doctor by their ID
-      operationId: deleteDoctorById
+      summary: Delete a relative
+      description: Delete a relative by ID
+      operationId: deleteRelative
       tags:
-        - doctors
+        - relatives
       parameters:
         - name: id
           in: path
           required: true
-          description: The ID of the doctor to delete
+          description: ID of the relative to delete
           schema:
             type: string
             example: "614b1b7754d1f90012345678"
       responses:
         '200':
-          description: Doctor deleted successfully
+          description: Relative deleted successfully
           content:
             application/json:
               schema:
@@ -176,9 +223,9 @@ paths:
                     example: false
                   message:
                     type: string
-                    example: "Doctor deleted successfully"
+                    example: "Relative deleted successfully"
         '404':
-          description: Doctor not found
+          description: Relative not found
           content:
             application/json:
               schema:
@@ -189,7 +236,7 @@ paths:
                     example: true
                   message:
                     type: string
-                    example: "Doctor not found"
+                    example: "Relative not found"
         '500':
           description: Server error
           content:
@@ -206,38 +253,29 @@ paths:
 
 components:
   schemas:
-    Doctor:
+    Relative:
       type: object
       properties:
+        id:
+          type: string
+          example: "614b1b7754d1f90012345678"
         name:
           type: string
-          example: "Dr. John"
+          example: John Doe
+        relationship:
+          type: string
+          example: Father
         phone:
           type: string
-          example: 0905123455
-        email:
+          example: 0905123456   
+        patient_id:
           type: string
-          example: "doctor.john@example.com"
-        age:
-          type: string
-          example: "35"
-        address:
-          type: string
-          example: "123 Main Street, Lagos"
-        location:
-          type: string
-          example: "Lagos"
-        gender:
-          type: string
-          example: "nam"
-        expertise:
-          type: string
-          example: "Cardiology"
+          example: "614b1b7754d1f90012345678"
         createdAt:
           type: string
           format: date-time
-          example: "2024-10-16T12:34:56Z"
+          example: "2024-12-18T12:34:56Z"
         updatedAt:
           type: string
           format: date-time
-          example: "2024-10-16T12:34:56Z"
+          example: "2024-12-18T12:34:56Z"

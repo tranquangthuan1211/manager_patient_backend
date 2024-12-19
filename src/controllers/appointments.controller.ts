@@ -2,108 +2,22 @@ import { Request, Response } from 'express'
 import AppointmentDataBase from '../models/appointment-model'
 import { verifyToken } from '../securities/jwt';
 import { ObjectId } from "mongodb";
-
-async function getAppointmentsHandler(id:string, role:string) {
-    try {
-            let pipeline: any[] = [];
-            if(role === "doctor"){
-                pipeline = pipeline.concat([{
-                    $lookup: {
-                    from: "users", 
-                    let: { doctorId: id },
-                    pipeline: [
-                        { $match: { $expr: { $eq: ["$id", "$$doctorId"] } } },
-                        { $project: { name: 1, _id: 0 } }
-                    ],
-                    as: "doctor"
-                    }
-                },
-                {
-                    $lookup: {
-                    from: "users",
-                    let: { patientId: "$patient_id" },
-                    pipeline: [
-                        { $match: { $expr: { $eq: ["$id", "$$patientId"] } } },
-                        { $project: { name: 1, _id: 0 } }
-                    ],
-                    as: "patient"
-                    }
-                },
-                {
-                    $project: {
-                    _id: 1, 
-                    patient_id: 1,
-                    doctor_id: 1,
-                    manager_id: 1,
-                    date: 1,
-                    time: 1,
-                    patient_name: { $arrayElemAt: ["$patient.name", 0] }
-                    }
-                }
-                ])
-            }else {
-                pipeline = pipeline.concat([
-                {
-                    $lookup: {
-                        from: "users", 
-                        let: { managerId: id },
-                        pipeline: [
-                            { $match: { $expr: { $eq: ["$id", "$$managerId"] } } },
-                            { $project: { name: 1, _id: 0 } }
-                        ],
-                        as: "manager"
-                    }
-                },
-                {
-                    $lookup: {
-                    from: "users", 
-                    let: { doctorId: "$doctor_id" },
-                    pipeline: [
-                        { $match: { $expr: { $eq: ["$id", "$$doctorId"] } } },
-                        { $project: { name: 1, _id: 0 } }
-                    ],
-                    as: "doctor"
-                    }
-                },
-                {
-                    $lookup: {
-                    from: "users",
-                    let: { patientId: "$patient_id" },
-                    pipeline: [
-                        { $match: { $expr: { $eq: ["$id", "$$patientId"] } } },
-                        { $project: { name: 1, _id: 0 } }
-                    ],
-                    as: "patient"
-                    }
-                },
-                {
-                    $project: {
-                    _id: 1,
-                    manager_id: 1,
-                    status:1,
-                    date: 1,
-                    time: 1,
-                    patient_name: { $arrayElemAt: ["$patient.name", 0] },
-                    doctor_name: { $arrayElemAt: ["$doctor.name", 0] }
-                    }
-                }
-                ])
-            }
-          const data = await AppointmentDataBase.appointments.aggregate(pipeline).toArray();
-          return data;
-        } catch (err: any) {
-        console.error("Error in getUserInfoHandler:", err);
-        throw err;
-    }
-}
+import { error } from 'console';
+import {getAppointmentsHandler} from '../services/appointment/appointment-service'
 class AppointmentController {
     async getAppointment(req: Request, res: Response){
         try {
             const reqHeaders = req.headers['authorization']
+            console.log(reqHeaders)
             const payload = await verifyToken({ tokens: reqHeaders as string })
-            const appointment = await AppointmentDataBase.appointments.findOne({patient_id: payload.id})
-            console.log(appointment)
+            console.log(payload)
+            const appointment = await getAppointmentsHandler("675894765a8c93f7a9f0fc34")
+            if(!appointment){
+                throw new Error("Appointment not found")
+            }
             return res.status(200).json({
+                error: false,
+                message:"success",
                 data: appointment
             })
         }
@@ -116,7 +30,7 @@ class AppointmentController {
             const reqHeaders = req.headers['authorization']
             const payload = await verifyToken({ tokens: reqHeaders as string })
             console.log(payload.role)
-            const appointments = await getAppointmentsHandler(payload.id as string, payload.role as string)
+            const appointments = await getAppointmentsHandler("")
             // console.log(appointments)
             return res.status(200).json({
                 data: appointments
@@ -155,10 +69,9 @@ class AppointmentController {
     }
     async updateAppointment(req: Request, res: Response){
         try {
-            console.log(req.body)
-            const _id = req.params.id as string
-            const {id, doctor_id, status, ...rest} = req.body
-            const result = await AppointmentDataBase.appointments.updateOne({ _id: new ObjectId(_id )}, {$set: {status: status, doctor_id}})    
+            const id = req.params.id as string
+            const {_id,...rest} = req.body
+            const result = await AppointmentDataBase.appointments.updateOne({ _id: new ObjectId(id )}, {$set: rest})    
             res.status(200).json({
                 data: result
             })

@@ -4,16 +4,17 @@ import { ObjectId } from "mongodb";
 import { verifyToken } from "../securities/jwt";
 import { Users } from "../models/schemas/user";
 
-async function getDoctorInfoHandler(id: string) {
-
-}
 class DoctorController {
   async getDoctor(req: Request, res: Response) {
     try{
       const id = req.params.id;
       console.log(id);
       const doctors = await UsersDataBase.users.findOne({ _id: new ObjectId(id) });
-      res.json(doctors);
+      res.json({
+        error: 0,
+        message: "Get doctor successfully",
+        data: doctors, 
+      });
     }
     catch (error:any) {
       return res.status(400).json({
@@ -37,18 +38,15 @@ class DoctorController {
       });
     }
   }
+  // --------------
   async getDoctors(req: Request, res: Response) {
     try{
-        const headersRequest = req.headers.authorization;
-        const token = await verifyToken({tokens: headersRequest as string});
-        // console.log((token.role));
-        let patients:Users[] = [] 
-        if(token.role === "admin") {
-            patients = await UsersDataBase.users.find({role:"doctor"}).toArray();
-            return res.status(200).json(patients);
-        }
-        const data = await UsersDataBase.users.find({role:"doctor",id_manager:token.id }).toArray();
-        return res.status(200).json(data);
+        const doctors = await UsersDataBase.users.find({ role: "Doctor" }).toArray();
+        res.json({
+            error: 0,
+            message: "Get doctors successfully",
+            data: doctors,
+        });
 
     }
     catch (error:any) {

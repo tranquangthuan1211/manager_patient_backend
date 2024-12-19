@@ -18,9 +18,12 @@ paths:
               type: object
               required:
                 - name
+                - age
+                - gender
                 - address
                 - location
                 - phone
+                - expertise
                 - email
                 - password
                 - role
@@ -28,6 +31,12 @@ paths:
                 name:
                   type: string
                   example: Thuan
+                age:
+                  type: number
+                  example: 20
+                gender:
+                  type: string
+                  example: male
                 address:
                   type: string
                   example: 123 Main St
@@ -43,6 +52,9 @@ paths:
                 password:
                   type: string
                   example: securepassword
+                expertise:
+                  type: string
+                  example: Pediatrics
                 role:
                   type: string
                   example: "admin"
@@ -423,27 +435,24 @@ components:
         name:
           type: string
           example: Pizza
+        age:
+          type: number
+          example: 20
         address:
           type: string
           example: 123 Main St
+        location:
+          type: string
+          example: "106.688, 10.762"
+        gender:
+          type: string
+          example: male
         phone:
           type: string
           example: 0905123455
         email:
           type: string
           example: "tranquanthuan132@gmail.com"
-        age:
-          type: number
-          example: 20
-        location:
-          type: string
-          example: "106.688, 10.762"
-        gender:
-          type: string
-          example: "male"
-        status:
-          type: string
-          example: "active"
         expertise:
           type: string
           example: "Pediatrics"

@@ -32,7 +32,7 @@ const verifyToken = ({
     secret?: string;
 }) => {
     return new Promise<any>((resolve, reject) => {
-        const token = tokens.split(" ")[1];
+        const token = tokens.split(' ')[1];
         jwt.verify(token, secret, (err, decoded) => {
             if (err) {
                 throw reject(err);

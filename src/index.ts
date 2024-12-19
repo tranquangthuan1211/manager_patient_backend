@@ -4,11 +4,17 @@ import express, { NextFunction } from 'express';
 import Database from './configs/db';
 import useRouteUser from './routes/users';
 import useRouteFavourite from './routes/favourite';
+import useRouteRelative from './routes/relatives';
+import useRouteAppointment from './routes/appointment';
+import useRouteDoctor from './routes/doctors';
+import useRouteBlog from './routes/blog';
+import useRouteHistorySearch from './routes/history-search';
 import swaggerJSDoc from 'swagger-jsdoc';
 import SwaggerOption from "./configs/swagger";
 import swaggerUi from 'swagger-ui-express';
 import morgan from "morgan";
 import cors from 'cors';
+import path from "path";
 // import { rateLimit } from 'express-rate-limit'
 const app = express();
 const port = process.env.PORT || 3001;
@@ -32,7 +38,12 @@ Database.connect();
 // })
 const routesDef = [
   {path:"users", route: useRouteUser()},
+  {path:"doctors", route: useRouteDoctor()},
   {path:"favourites", route: useRouteFavourite()},
+  {path:"relatives", route: useRouteRelative()},
+  {path:"appointments", route: useRouteAppointment()},
+  {path:"blogs", route: useRouteBlog()},
+  {path:"history-search", route: useRouteHistorySearch()}
 ]
 app.use("/api-docs", swaggerUi.serve as any, swaggerUi.setup(swaggerDocument) as any);
 routesDef.forEach(({path,route}) => {

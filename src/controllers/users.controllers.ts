@@ -10,10 +10,9 @@ import {checkInputError} from "../securities/check-input"
 async function getUserInfoHandler(role: string) {
   try {
     const userCount = await UsersDataBase.users.countDocuments({ role: role });
-    // console.log(`Number of users with role ${role}: ${userCount}`);
 
     if (userCount === 0) {
-      return []; // Trả về mảng rỗng nếu không có người dùng nào
+      return []; 
     }
 
     let pipeline: any[] = [
@@ -185,6 +184,9 @@ class UserController {
       if(user) {
         throw new Error("User alreadly exits");
       }
+      if(newUser.role === null){
+        newUser.role = "patient";
+      }
       const result = await UsersDataBase.users.insertOne(newUser);
       if(!result.acknowledged) {
         throw new Error("Error when insert user");
@@ -273,7 +275,7 @@ class UserController {
       console.error('Lỗi khi tạo tài khoản:', error);
       return res.status(500).json({
         message: 'Đã xảy ra lỗi khi tạo tài khoản',
-        error: error,
+        error: 1,
       });
     }
   }
@@ -291,7 +293,7 @@ class UserController {
       console.error('Lỗi khi cập nhật tài khoản:', error);
       return res.status(500).json({
         message: 'Đã xảy ra lỗi khi cập nhật tài khoản',
-        error: error,
+        error: 1,
       });
     }
   }
@@ -313,7 +315,21 @@ class UserController {
   }
   async changePassword(req: Request, res: Response) {
     try{
-
+      const headerRequest = req.headers.authorization;
+      const payload = await verifyToken({ tokens:headerRequest as string});
+      const user = await UsersDataBase.users.findOne({ _id: new ObjectId(payload._id)});
+      if(!user) {
+        throw new Error("User not found");
+      }
+      if(!await comparePassword(req.body.oldPassword, user.password)) {
+        throw new Error("Password is incorrect");
+      }
+      const newPassword = await hashPassword(req.body.newPassword);
+      const result = await UsersDataBase.users.updateOne({ _id: new ObjectId(payload._id)}, { $set: {password: newPassword}});
+      return res.status(200).json({
+        message: 'Cập nhật mật khẩu thành công',
+        data: result,
+      });
     }catch(error:any) {
       return res.status(400).json({
         error: 1,
