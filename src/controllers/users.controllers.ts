@@ -175,8 +175,14 @@ class UserController {
   }
   async register(req: Request, res: Response) {
     try {
-
-      const newUser = req.body as Users;
+      if (!req.file) {
+          console.log("ko có file")
+          return res.status(400).json({ error: 'No file uploaded' });
+      }
+      const fileData = req.file;
+      req.body.image = fileData?.path;
+      const newUser = req.body;
+      console.log(newUser)
       newUser.password = await hashPassword(newUser.password as string);
       const user = await UsersDataBase.users.findOne({email: newUser.email});
       const {password, ...dataUser} = newUser; 

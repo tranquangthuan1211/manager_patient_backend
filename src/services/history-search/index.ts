@@ -47,7 +47,7 @@ export async function getHistoryDoctorSearchHandler(id: string) {
           {
               $project: {
                     
-                    doctorId: 1, // Bao gồm trường name
+                    doctorId: 1, 
                     name: { $arrayElemAt: ["$doctor.name", 0] },
                     email: { $arrayElemAt: ["$doctor.email", 0] },
                     age: { $arrayElemAt: ["$doctor.age", 0] },
