@@ -9,6 +9,7 @@ import useRouteAppointment from './routes/appointment';
 import useRouteDoctor from './routes/doctors';
 import useRouteBlog from './routes/blog';
 import useRouteHistorySearch from './routes/history-search';
+import useClinicRoute from './routes/clinic';
 import swaggerJSDoc from 'swagger-jsdoc';
 import SwaggerOption from "./configs/swagger";
 import swaggerUi from 'swagger-ui-express';
@@ -43,7 +44,8 @@ const routesDef = [
   {path:"relatives", route: useRouteRelative()},
   {path:"appointments", route: useRouteAppointment()},
   {path:"blogs", route: useRouteBlog()},
-  {path:"history-search", route: useRouteHistorySearch()}
+  {path:"history-search", route: useRouteHistorySearch()},
+  {path:"clinics", route: useClinicRoute()},
 ]
 app.use("/api-docs", swaggerUi.serve as any, swaggerUi.setup(swaggerDocument) as any);
 routesDef.forEach(({path,route}) => {
