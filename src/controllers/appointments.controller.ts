@@ -10,8 +10,8 @@ class AppointmentController {
             const reqHeaders = req.headers['authorization']
             console.log(reqHeaders)
             const payload = await verifyToken({ tokens: reqHeaders as string })
-            console.log(payload)
-            const appointment = await getAppointmentsHandler("675894765a8c93f7a9f0fc34")
+            // console.log(payload)
+            const appointment = await getAppointmentsHandler("6762f84c51d9c7640423fe72")
             if(!appointment){
                 throw new Error("Appointment not found")
             }
