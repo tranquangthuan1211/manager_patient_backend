@@ -8,20 +8,20 @@ async function getFavourites(id: string) {
       if (userCount === 0) {
         return []; 
       }
-  
+      console.log(id)
       let pipeline: any[] = [
         { $match: { user_id: id } },
       ];
       pipeline.push({
-        $lookup: {
-          from: "users",
-          let: { doctorId: "$doctor_id" },
-          pipeline: [
-            { $match: { $expr: { $eq: ["$id", "$$doctorId"] } } },
-            { $project: { name: 1, _id: 0,expertise:1,address:1,location:1 } }
-          ],
-          as: "doctor"
-        }
+          $lookup: {
+              from: "users",
+              let: { doctorId: { $toObjectId: "$doctor_id" } }, 
+              pipeline: [
+                  { $match: { $expr: { $eq: ["$_id", "$$doctorId"] } } },
+                  { $project: { name: 1, _id: 0,image:1,expertise:1 }} 
+              ],
+              as: "doctor"
+          }
       });
       pipeline.push({
         $project: {
@@ -30,7 +30,8 @@ async function getFavourites(id: string) {
             name: { $arrayElemAt: ["$doctor.name", 0] },
             expertise: { $arrayElemAt: ["$doctor.expertise", 0] },
             address: { $arrayElemAt: ["$doctor.address", 0] },
-            location: { $arrayElemAt: ["$doctor.location", 0] }
+            location: { $arrayElemAt: ["$doctor.location", 0] },
+            image: { $arrayElemAt: ["$doctor.image", 0] }
 
           },
           user_id: 1
