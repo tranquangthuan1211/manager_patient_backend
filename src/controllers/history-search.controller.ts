@@ -16,6 +16,22 @@ class HistorySearchController {
             res.status(500).json({ message: 'Error: ' + error });
         }
     }
+    async createHistorySearch(req: Request, res: Response) {
+        try {
+            const newHistorySearch = {...req.body};
+            const result = await HistoryDoctorSearchDataBase.historySearch.insertOne(newHistorySearch);
+            res.status(200).json({
+                error: 0,
+                message: 'Success',
+            });
+        } catch (error) {
+            res.status(500).json({
+                    error: 1,
+                    message: 'Error: ' + error 
+                }
+            );
+        }
+    }
 }
 
 export default new HistorySearchController();

@@ -9,6 +9,7 @@ import useRouteAppointment from './routes/appointment';
 import useRouteDoctor from './routes/doctors';
 import useRouteBlog from './routes/blog';
 import useRouteHistorySearch from './routes/history-search';
+import useRouteFavouriteClinic from './routes/clinic-favourite';
 import useClinicRoute from './routes/clinic';
 import swaggerJSDoc from 'swagger-jsdoc';
 import SwaggerOption from "./configs/swagger";
@@ -41,6 +42,7 @@ const routesDef = [
   {path:"users", route: useRouteUser()},
   {path:"doctors", route: useRouteDoctor()},
   {path:"favourites", route: useRouteFavourite()},
+  {path:"clinic-favourites", route: useRouteFavouriteClinic()},
   {path:"relatives", route: useRouteRelative()},
   {path:"appointments", route: useRouteAppointment()},
   {path:"blogs", route: useRouteBlog()},
