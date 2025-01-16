@@ -10,9 +10,16 @@ class RelativeController {
         const relative = req.body as Relative;
         try {
             await RelativeDataBase.relatives.insertOne(relative);
-            res.status(201).send();
+            res.status(201).json({
+                error: 0,
+                message: "success",
+                data: relative
+            });
         } catch (error) {
-            res.status(500).send(error);
+            res.status(500).json({
+                error: 1,
+                message: error
+            });
         }
     }
 
@@ -27,7 +34,10 @@ class RelativeController {
                 data: relatives
             })
         } catch (error) {
-            res.status(500).send(error);
+            return res.status(500).json({
+                error: true,
+                message: error
+            })
         }
     }
     async updateRelative(req: Request, res: Response) {
@@ -53,7 +63,10 @@ class RelativeController {
                 message: "success"
             });
         } catch (error) {
-            res.status(500).send(error);
+            res.status(500).json({
+                error: true,
+                message: error
+            });
         }
     }
 }
