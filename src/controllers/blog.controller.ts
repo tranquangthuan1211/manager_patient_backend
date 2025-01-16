@@ -40,6 +40,12 @@ class BlogController {
     }
     async createBlog(req:Request, res:Response) {
         try {
+            if (!req.file) {
+                console.log("ko có file")
+                return res.status(400).json({ error: 'No file uploaded' });
+            }
+            const fileData = req.file;
+            req.body.image = fileData?.path;
             const blog = req.body as Blog
             const result = await BlogDataBase.blogs.insertOne(blog)
             res.status(201).json({
