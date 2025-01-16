@@ -3,12 +3,12 @@ import BlogDataBase from '../models/blog-model'
 import { error } from 'console'
 import { ObjectId } from 'mongodb'
 import { Blog } from '../models/schemas/blog'
-import {getRelativeHandler} from '../services/blog/index'
+import {getBlogHandler,getBlogHandlers} from '../services/blog/index'
 
 class BlogController {
     async getBlogs(req:Request, res:Response) {
         try {
-            const blogs = await BlogDataBase.blogs.find().toArray()
+            const blogs = await getBlogHandlers()
             res.status(200).json({
                 error: false,
                 message: "success",
@@ -21,7 +21,7 @@ class BlogController {
     async getBlog(req:Request, res:Response) {
         const id = req.params.id
         try {
-            const blog = await getRelativeHandler(id)
+            const blog = await getBlogHandler(id)
             if(blog) {
                 res.status(200).json({
                     error: false,
