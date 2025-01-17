@@ -56,6 +56,27 @@ class FavouriteController {
             });
         }
     }
+    async deleteFavourite(req: Request, res: Response) {
+        try {
+            const idFav = req.params.id;
+            const favourite = await FavouriteBase.Favourite.deleteOne({ _id: new ObjectId(idFav)});
+            if(favourite.deletedCount === 0) {
+                throw new Error("Favourite not found");
+            }
+            res.json({
+                data: favourite,
+                message: "Favourite deleted successfully",
+                error: false
+            });
+        }
+        catch(err) {
+            res.status(400).json({
+                data: null,
+                message: "Favourite not deleted",
+                error: true
+            });
+        }
+    }
 }
 
 export default new FavouriteController();
