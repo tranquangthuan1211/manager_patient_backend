@@ -8,6 +8,7 @@ function useRouteFavourite() {
     router.get('/', FavouriteController.getFavourites);
     router.post("/", FavouriteController.addFavourite);
     router.put("/", FavouriteController.updateFavourite);
+    router.delete("/:id", FavouriteController.deleteFavourite);
     return router;
 }
 export default useRouteFavourite;
