@@ -15,5 +15,17 @@ class ClinicController {
       res.status(500).json({ message: error.message });
     }
   }
+  async getDoctors(req: Request, res: Response) {
+    try {
+      const doctors = await UsersDataBase.users.find({ id_clinic:req.params.id }).toArray();
+      res.status(200).json({
+        error: 0,
+        message: "success",
+        data: doctors,
+      });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  }
 }
 export default new ClinicController();

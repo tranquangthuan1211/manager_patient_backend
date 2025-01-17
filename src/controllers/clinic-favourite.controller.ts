@@ -56,6 +56,26 @@ class FavouriteClinicController {
             });
         }
     }
+    async deleteFavourite(req: Request, res: Response) {
+        try {
+            const favourite = await FavouriteClinicBase.FavouriteClinic.deleteOne({ _id: new ObjectId(req.params.id) });
+            if(favourite.deletedCount === 0) {
+                throw new Error("Favourite not found");
+            }
+            res.json({
+                data: favourite,
+                message: "Favourite deleted successfully",
+                error: false
+            });
+        }
+        catch(err) {
+            res.status(400).json({
+                data: null,
+                message: "Favourite not deleted",
+                error: true
+            });
+        }
+    }
 }
 
 export default new FavouriteClinicController();

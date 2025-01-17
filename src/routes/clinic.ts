@@ -4,6 +4,7 @@ const router = express.Router();
 
 const useClinicRoute = () => {
     router.get('/', ClinicController.getClinics);
+    router.get('/:id', ClinicController.getDoctors);
     return router;
 }
 
