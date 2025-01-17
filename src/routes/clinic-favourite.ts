@@ -8,6 +8,7 @@ function useRouteFavouriteClinic() {
     router.get('/', FavouriteClinicController.getFavourites);
     router.post("/", FavouriteClinicController.addFavourite);
     router.put("/", FavouriteClinicController.updateFavourite);
+    router.delete("/:id", FavouriteClinicController.deleteFavourite);
     return router;
 }
 export default useRouteFavouriteClinic;
