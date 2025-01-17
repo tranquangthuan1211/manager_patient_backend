@@ -1,9 +1,9 @@
-import mongoose, {Collection} from 'mongoose'
-import {Blog} from './schemas/blog'
+import mongoose, { Collection } from "mongoose";
+import { Blog } from "./schemas/blog";
 
 class BlogDataBase {
     get blogs(): Collection<Blog> {
-        return mongoose.connection.collection('blog')
+        return mongoose.connection.collection("blog");
     }
 }
 
