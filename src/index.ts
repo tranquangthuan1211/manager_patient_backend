@@ -10,6 +10,7 @@ import useRouteDoctor from './routes/doctors';
 import useRouteBlog from './routes/blog';
 import useRouteHistorySearch from './routes/history-search';
 import useRouteFavouriteClinic from './routes/clinic-favourite';
+import useRouteReview from './routes/review';
 import useClinicRoute from './routes/clinic';
 import swaggerJSDoc from 'swagger-jsdoc';
 import SwaggerOption from "./configs/swagger";
@@ -48,6 +49,7 @@ const routesDef = [
   {path:"blogs", route: useRouteBlog()},
   {path:"history-search", route: useRouteHistorySearch()},
   {path:"clinics", route: useClinicRoute()},
+  {path:"reviews", route: useRouteReview()}
 ]
 app.use("/api-docs", swaggerUi.serve as any, swaggerUi.setup(swaggerDocument) as any);
 routesDef.forEach(({path,route}) => {
