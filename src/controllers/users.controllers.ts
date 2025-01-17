@@ -667,7 +667,7 @@ class UserController {
             const savedBlogs = await Database.blog_action.aggregate(pipeline).toArray();
 
             if (savedBlogs.length === 0) {
-                return res.status(400).json({
+                return res.status(200).json({
                     error: true,
                     message: "No blog saved",
                 });
