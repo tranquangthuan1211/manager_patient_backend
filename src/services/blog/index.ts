@@ -64,7 +64,7 @@ export async function getBlogHandlers(currentUserId: string) {
             };
         });
 
-        console.log(data);
+        // console.log(data);
 
         return data;
     } catch (err: any) {

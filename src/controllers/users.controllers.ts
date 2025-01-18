@@ -698,7 +698,12 @@ class UserController {
 
             const info = decodeToken(token) as any;
 
-            let user = await UsersDataBase.users.findOne({ email: info.email });
+            let user = await UsersDataBase.users.findOne({
+                email: info.email,
+                password: { $exists: false },
+            });
+
+            console.log(">>> user:", user);
 
             if (!user) {
                 const newUser = {
@@ -710,6 +715,8 @@ class UserController {
 
                 const result = await UsersDataBase.users.insertOne(newUser);
 
+                console.log(">>> result:", result);
+
                 if (!result.acknowledged) {
                     return res.status(400).json({
                         error: true,
@@ -717,7 +724,10 @@ class UserController {
                     });
                 }
 
-                user = await UsersDataBase.users.findOne({ email: info.email });
+                user = await UsersDataBase.users.findOne({
+                    email: info.email,
+                    password: { $exists: false },
+                });
             }
 
             token = await signToken({ payload: user });
