@@ -10,6 +10,8 @@ import useRouteDoctor from './routes/doctors';
 import useRouteBlog from './routes/blog';
 import useRouteHistorySearch from './routes/history-search';
 import useRouteFavouriteClinic from './routes/clinic-favourite';
+import useRouteComplaint from './routes/complaints';
+import useRoutePatient from './routes/patients';
 import useRouteReview from './routes/review';
 import useClinicRoute from './routes/clinic';
 import swaggerJSDoc from 'swagger-jsdoc';
@@ -41,6 +43,7 @@ Database.connect();
 // })
 const routesDef = [
   {path:"users", route: useRouteUser()},
+  {path:"patients", route: useRoutePatient()},
   {path:"doctors", route: useRouteDoctor()},
   {path:"favourites", route: useRouteFavourite()},
   {path:"clinic-favourites", route: useRouteFavouriteClinic()},
@@ -49,7 +52,8 @@ const routesDef = [
   {path:"blogs", route: useRouteBlog()},
   {path:"history-search", route: useRouteHistorySearch()},
   {path:"clinics", route: useClinicRoute()},
-  {path:"reviews", route: useRouteReview()}
+  {path:"reviews", route: useRouteReview()},
+  {path:"complaints", route: useRouteComplaint()},
 ]
 app.use("/api-docs", swaggerUi.serve as any, swaggerUi.setup(swaggerDocument) as any);
 routesDef.forEach(({path,route}) => {
