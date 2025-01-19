@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import HistoryDoctorSearchDataBase from '../models/history-doctor-search-model';
 import {getHistoryDoctorSearchHandler} from '../services/history-search/index'
 import { error } from 'console';
+import { ObjectId } from 'mongodb';
 
 class HistorySearchController {
     async getHistorySearch(req: Request, res: Response) {
@@ -19,6 +20,13 @@ class HistorySearchController {
     async createHistorySearch(req: Request, res: Response) {
         try {
             const newHistorySearch = {...req.body};
+            const re = await HistoryDoctorSearchDataBase.historySearch.findOne({ _id: new ObjectId(req.body._id)});
+            if(re) {
+                return res.status(200).json({
+                    error: 0,
+                    message: 'Success',
+                })
+            }
             const result = await HistoryDoctorSearchDataBase.historySearch.insertOne(newHistorySearch);
             res.status(200).json({
                 error: 0,
