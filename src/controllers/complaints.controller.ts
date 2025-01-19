@@ -102,7 +102,7 @@ class ComplaintsController {
         // const ip = requestIp.getClientIp(req);
         const headers = req.headers.authorization
         const payload = await verifyToken({ tokens:headers as string});
-        // console.log(payload)
+        console.log(payload)
         if(payload.role === 'admin') {
             const complaints = await getComplaintAdmin();
             return res.status(200).json(complaints)

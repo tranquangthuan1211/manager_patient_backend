@@ -105,7 +105,8 @@ class UserController {
     }
     async getAllUsers(req: Request, res: Response) {
         try {
-            const users = await UsersDataBase.users.find().toArray();
+            const role = req.query.role as string;
+            const users = await UsersDataBase.users.find({role:role}).toArray();
             return res.status(200).json({
                 data: users,
             });

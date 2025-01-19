@@ -27,6 +27,7 @@ async function getFavourites(id: string) {
         $project: {
           _id: 1,
           doctor: {
+            id_doctor: { $arrayElemAt: ["$doctor._id", 0] },
             name: { $arrayElemAt: ["$doctor.name", 0] },
             expertise: { $arrayElemAt: ["$doctor.expertise", 0] },
             address: { $arrayElemAt: ["$doctor.address", 0] },
