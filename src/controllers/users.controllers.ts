@@ -694,8 +694,9 @@ class UserController {
 
     async loginGoogle(req: Request, res: Response) {
         try {
+            console.log(">>> req.body:", req.body);
             let token = req.body.token;
-
+            console.log(">>> token:", token);
             const info = decodeToken(token) as any;
 
             let user = await UsersDataBase.users.findOne({

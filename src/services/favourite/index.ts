@@ -18,14 +18,14 @@ async function getFavourites(id: string) {
               let: { doctorId: { $toObjectId: "$doctor_id" } }, 
               pipeline: [
                   { $match: { $expr: { $eq: ["$_id", "$$doctorId"] } } },
-                  { $project: { name: 1, _id: 0,image:1,expertise:1 }} 
+                  { $project: { name: 1, _id: 1,image:1,expertise:1 }} 
               ],
               as: "doctor"
           }
       });
       pipeline.push({
         $project: {
-          _id: 0,
+          _id: 1,
           doctor: {
             name: { $arrayElemAt: ["$doctor.name", 0] },
             expertise: { $arrayElemAt: ["$doctor.expertise", 0] },
