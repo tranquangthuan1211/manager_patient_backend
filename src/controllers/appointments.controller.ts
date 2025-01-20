@@ -4,6 +4,7 @@ import { verifyToken } from '../securities/jwt';
 import { ObjectId } from "mongodb";
 import { error } from 'console';
 import {getAppointmentsHandler} from '../services/appointment/appointment-service'
+import rabbitMQ from "../configs/rabbit-mq";
 class AppointmentController {
     async getAppointment(req: Request, res: Response){
         try {
@@ -44,6 +45,10 @@ class AppointmentController {
             const reqHeaders = req.headers['authorization']
             const payload = await verifyToken({ tokens: reqHeaders as string })
             // console.log(payload)
+            const to = payload.email;
+            const message = { to, subject: "Thông tin đặt lịch" };
+            const channel = await rabbitMQ.getChannel();
+            channel.publish("emailExchange", "email.send", Buffer.from(JSON.stringify(message)));
             const newAppointment = {...req.body, patient_id: payload._id}
             console.log(newAppointment)
             const result = await AppointmentDataBase.appointments.insertOne(newAppointment)

@@ -168,12 +168,12 @@ class UserController {
     }
     async register(req: Request, res: Response) {
         try {
-            if (!req.file) {
-                console.log("ko có file");
-                return res.status(400).json({ error: "No file uploaded" });
-            }
-            const fileData = req.file;
-            req.body.image = fileData?.path;
+            // if (!req.file) {
+            //     console.log("ko có file");
+            //     return res.status(400).json({ error: "No file uploaded" });
+            // }
+            // const fileData = req.file;
+            // req.body.image = fileData?.path;
             const newUser = req.body;
             console.log(newUser);
             newUser.password = await hashPassword(newUser.password as string);

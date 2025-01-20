@@ -10,16 +10,20 @@ import useRouteDoctor from './routes/doctors';
 import useRouteBlog from './routes/blog';
 import useRouteHistorySearch from './routes/history-search';
 import useRouteFavouriteClinic from './routes/clinic-favourite';
+import UseSettingAppoitmentRoutes from './routes/setting-appoitments';
 import useRouteComplaint from './routes/complaints';
 import useRoutePatient from './routes/patients';
+import useServiceRouter from './routes/services';
 import useRouteReview from './routes/review';
 import useClinicRoute from './routes/clinic';
+import useRouteTest from './routes/test';
 import swaggerJSDoc from 'swagger-jsdoc';
 import SwaggerOption from "./configs/swagger";
 import swaggerUi from 'swagger-ui-express';
 import morgan from "morgan";
 import cors from 'cors';
 import path from "path";
+import RabbitMQ from './configs/rabbit-mq';
 // import { rateLimit } from 'express-rate-limit'
 const app = express();
 const port = process.env.PORT || 3001;
@@ -54,6 +58,9 @@ const routesDef = [
   {path:"clinics", route: useClinicRoute()},
   {path:"reviews", route: useRouteReview()},
   {path:"complaints", route: useRouteComplaint()},
+  {path:"services", route: useServiceRouter()},
+  {path:"setting-appointment", route: UseSettingAppoitmentRoutes()},
+  {path:"test", route: useRouteTest()}
 ]
 app.use("/api-docs", swaggerUi.serve as any, swaggerUi.setup(swaggerDocument) as any);
 routesDef.forEach(({path,route}) => {
@@ -73,6 +80,12 @@ app.use((error: any, req: Request, res: Response, next: NextFunction) => {
   });
 });
 
-app.listen(port, () => {
-  console.log(`Server started at http://localhost:${port}`);
-});
+RabbitMQ.connect()
+    .then(() => {
+        app.listen(port, () => {
+            console.log('Producer API running on http://localhost:3001');
+        });
+    })
+    .catch((error) => {
+        console.error('Failed to start the server:', error);
+    });
