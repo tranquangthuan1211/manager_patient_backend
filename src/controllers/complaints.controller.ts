@@ -29,6 +29,17 @@ async function getComplaintAdmin(){
                     ],
                     as: "patient"
                 }
+            },
+            {
+                $lookup: {
+                    from: "clinic",
+                    let: { managerId:{ $toObjectId: "$manager_id" } },
+                    pipeline: [
+                        { $match: { $expr: { $eq: ["$_id", "$$managerId"] } } },
+                        { $project: { name: 1, _id: 0 } }
+                    ],
+                    as: "manager"
+                }
             }
         ]);
         pipeline.push({
@@ -39,6 +50,7 @@ async function getComplaintAdmin(){
                 description:1,
                 doctor_name: { $arrayElemAt: ["$doctor.name", 0] },
                 patient_name: { $arrayElemAt: ["$patient.name", 0] },
+                manager_name: { $arrayElemAt: ["$manager.name", 0] }
             }
         });
         const data = await ComplaintDataBase.complaints.aggregate(pipeline).toArray();
